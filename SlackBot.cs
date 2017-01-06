@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin.Hosting;
 using System;
+using System.Text;
 using System.Collections.Generic;
 
 namespace SlackBotLib
@@ -13,7 +14,15 @@ namespace SlackBotLib
 
 		public SlackBot(string baseAddress, string apiToken, List<ResponseMethods> responseMethods)
 		{
-			_responseMethods = responseMethods;
+			_responseMethods.Add(
+				new ResponseMethods
+				{
+					Command = "!help",
+					Usage = "Get a list of all bot commands.",
+					ResponseHandler = GetHelp
+				}
+			);
+			_responseMethods.AddRange(responseMethods);
 			_token = apiToken;
 			_baseAddress = baseAddress;
 		}
@@ -36,6 +45,14 @@ namespace SlackBotLib
 		public static List<ResponseMethods> GetResponseMethods()
 		{
 			return _responseMethods;
+		}
+
+		private static string GetHelp(string command)
+		{
+			StringBuilder sb = new StringBuilder();
+			_responseMethods.ForEach(r => sb.AppendLine(
+				string.Format("{0} - {1}", r.Command, r.Usage)));
+			return sb.ToString();
 		}
 	}
 }
