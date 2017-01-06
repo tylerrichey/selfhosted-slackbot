@@ -10,7 +10,7 @@ namespace SlackBotLib
 		public delegate string ResponseDelegate(string command);
 		private string _baseAddress;
 		private static string _token;
-		private static List<ResponseMethods> _responseMethods;
+		private static List<ResponseMethods> _responseMethods = new List<ResponseMethods>();
 
 		public SlackBot(string baseAddress, string apiToken, List<ResponseMethods> responseMethods)
 		{
