@@ -1,4 +1,4 @@
-This is a self-hosted Slack bot using the OWIN .NET self-hosting libraries. You will need to start a new console application targeting Mono or .NET v4.5 and provide a base url, an API token from Slack, and a List of objects that define the commands available to your bot. 
+This is a self-hosted Slack bot for outgoing webhooks using the OWIN .NET self-hosting libraries. You will need to start a new console application targeting Mono or .NET v4.5 and provide a base url, an API token from Slack, and a List of objects that define the commands available to your bot. 
 
 You can install the library via nuget with: Install-Package SlackBotLib
 
