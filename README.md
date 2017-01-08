@@ -23,6 +23,8 @@ namespace TestConsole
                 }
             };
 						
+			//Example of the overload to specify the help command in channel
+			//SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "asdasdasdasd", responseMethods, ".help");
             SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "asdasdasdasd", responseMethods);
             slackBot.StartBot();
         }
@@ -37,4 +39,4 @@ namespace TestConsole
 
 The full API URL you will put in Slack, will be: baseaddress/api/bot, i.e.: http://myhostname.com:9000/api/bot
 
-The bot comes with one pre-defined command, "!help", which lists out the 'Command' and 'Usage' fields from every item in the List of ResponseMethods.
+The bot comes with one pre-defined command, "!help", which lists out the 'Command' and 'Usage' fields from every item in the List of ResponseMethods. This command can be overridden in an overload of the constructor as well.
