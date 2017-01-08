@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SlackBotLib
 {
@@ -10,6 +11,7 @@ namespace SlackBotLib
 		public delegate string ResponseDelegate(string command);
 		private string _baseAddress;
 		private static string _token;
+		private static string _defaultHelpCommand = "!help";
 		private static List<ResponseMethods> _responseMethods = new List<ResponseMethods>();
 
 		public SlackBot(string baseAddress, string apiToken, List<ResponseMethods> responseMethods)
@@ -17,7 +19,7 @@ namespace SlackBotLib
 			_responseMethods.Add(
 				new ResponseMethods
 				{
-					Command = "!help",
+					Command = _defaultHelpCommand,
 					Usage = "Get a list of all bot commands.",
 					ResponseHandler = GetHelp
 				}
@@ -25,6 +27,12 @@ namespace SlackBotLib
 			_responseMethods.AddRange(responseMethods);
 			_token = apiToken;
 			_baseAddress = baseAddress;
+		}
+
+		public SlackBot(string baseAddress, string apiToken, List<ResponseMethods> responseMethods, string helpCommand)
+			: this(baseAddress, apiToken, responseMethods)
+		{
+			_responseMethods.FirstOrDefault(r => r.Command == _defaultHelpCommand).Command = helpCommand;
 		}
 
 		public void StartBot()

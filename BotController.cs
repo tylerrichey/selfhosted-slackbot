@@ -28,7 +28,7 @@ namespace SlackBotLib
 				return Request.CreateResponse(HttpStatusCode.Forbidden);
 			}
 
-			string textCommand = nvc["text"];
+			string textCommand = nvc["text"].Trim();
 			Console.WriteLine("Executing: " + textCommand);
 
 			var command = SlackBot.GetResponseMethods()
