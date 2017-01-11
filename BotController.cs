@@ -32,7 +32,7 @@ namespace SlackBotLib
 			Console.WriteLine("Executing: " + textCommand);
 
 			var command = SlackBot.GetResponseMethods()
-			                      .FirstOrDefault(r => r.Command == textCommand);
+			                      .FirstOrDefault(r => r.Command == textCommand.Split(' ')[0]);
 			if (command == null)
 			{
 				Console.WriteLine("Command has no handler.");
