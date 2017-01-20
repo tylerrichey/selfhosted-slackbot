@@ -61,6 +61,7 @@
     <Compile Include="SlackBot.cs" />
     <Compile Include="BotController.cs" />
     <Compile Include="ResponseMethods.cs" />
+    <Compile Include="SlackPost.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
