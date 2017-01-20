@@ -1,4 +1,4 @@
-This is a self-hosted Slack bot for outgoing webhooks using the OWIN .NET self-hosting libraries. You will need to start a new console application targeting Mono or .NET v4.5 and provide a base url, an API token from Slack, and a List of objects that define the commands available to your bot. 
+This is a self-hosted Slack bot for outgoing webhooks using the OWIN .NET self-hosting libraries. You will need to start a new console application targeting Mono or .NET v4.5 and provide a base URL, an API token from Slack, and a List of objects that define the commands available to your bot. 
 
 You can install the library via nuget with: Install-Package SlackBotLib
 
@@ -24,19 +24,32 @@ namespace TestConsole
             };
 						
 			//Example of the overload to specify the help command in channel
-			//SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "asdasdasdasd", responseMethods, ".help");
-            SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "asdasdasdasd", responseMethods);
+			//SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods, ".help");
+			//Example of the allow post overloads
+			//SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods, AllowPost);
+			//SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods, ".help", AllowPost);
+            SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods);
             slackBot.StartBot();
         }
 
-        private static string GetStatus(string command)
+        private static string GetStatus(SlackPost slackPost)
         {
-            return "This is the response to !status";
+            return "This is the response to !status for " + slackPost.User_Name;
         }
+	
+		//not required to use the library
+		private static bool AllowPost(SlackPost slackPost)
+		{
+			return (slackPost.User_Name != "OtherSlackBot");
+		}
     }
 }
 ```
 
 The full API URL you will put in Slack, will be: baseaddress/api/bot, i.e.: http://myhostname.com:9000/api/bot
 
-The bot comes with one pre-defined command, "!help", which lists out the 'Command' and 'Usage' fields from every item in the List of ResponseMethods. This command can be overridden in an overload of the constructor as well.
+The 'SlackPost' object is a mirror of what's sent by Slack for outgoing webhooks. You can see data examples here: https://api.slack.com/outgoing-webhooks
+
+The bot comes with one pre-defined command, "!help", which lists out the 'Command' and 'Usage' fields from every item in the List of ResponseMethods. This command's trigger word can be overridden in an overload of the constructor as well.
+
+There is also an overload of the constructor available to pass in a method that returns a boolean for whether or not a post is allowed, i.e., you want to prevent other bots from triggering this one, etc.
