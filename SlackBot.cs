@@ -13,6 +13,7 @@ namespace SlackBotLib
 		private string _baseAddress;
 		private static string _token;
 		private static string _defaultHelpCommand = "!help";
+		private string _generalGroup = "General";
 		private static List<ResponseMethods> _responseMethods = new List<ResponseMethods>();
 		private static AllowPostDelegate _allowPostDelegate = AllowPostDefault;
 
@@ -23,10 +24,14 @@ namespace SlackBotLib
 				{
 					Command = _defaultHelpCommand,
 					Usage = "Get a list of all bot commands.",
-					ResponseHandler = GetHelp
+					ResponseHandler = GetHelp,
+					Group = _generalGroup
 				}
 			);
 			_responseMethods.AddRange(responseMethods);
+			_responseMethods.Where(r => r.Group == string.Empty || r.Group == null)
+							.ToList()
+							.ForEach(r => r.Group = _generalGroup);
 			_token = apiToken;
 			_baseAddress = baseAddress;
 		}
@@ -74,9 +79,27 @@ namespace SlackBotLib
 		private static string GetHelp(SlackPost slackPost)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.AppendLine("Bot Command - Usage");
-			_responseMethods.ForEach(r => sb.AppendLine(
-				string.Format("{0} - {1}", r.Command, r.Usage)));
+			if (_responseMethods.Select(r => r.Group).Distinct().Count() == 1)
+			{
+				sb.AppendLine("Bot Command - Usage");
+				_responseMethods.ForEach(r => sb.AppendLine(
+					string.Format("{0} - {1}", r.Command, r.Usage)));
+			}
+			else
+			{
+				var responseGroups = _responseMethods.GroupBy(r => r.Group)
+													 .Select(r => new { r.Key, responseMethods = r.ToList() });
+				foreach (var groups in responseGroups)
+				{
+					sb.AppendLine(string.Format("{0}:", groups.Key));
+					groups.responseMethods.ForEach(g =>
+											  sb.AppendLine(
+												  string.Format("\t{0} - {1}", g.Command, g.Usage)
+												 )
+											 );
+				}
+				
+			}
 			return sb.ToString();
 		}
 	}

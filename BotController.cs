@@ -14,7 +14,7 @@ namespace SlackBotLib
 		{
 			Console.WriteLine("Received post.");
 			NameValueCollection nvc = Request.Content.ReadAsFormDataAsync().Result;
-			SlackPost slackPost = SlackPost.GetFromPost(nvc);
+			SlackPost slackPost = new SlackPost(nvc);
 
 			Console.WriteLine(
 				string.Format(
