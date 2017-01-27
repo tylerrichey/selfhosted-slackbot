@@ -67,10 +67,10 @@ namespace TestConsole
             };
 	    
 			SlackBot slackBot = new SlackBot("http://myhostname.com:9000", 
-							"APIToken", 
-							responseMethods, 
-							".help", 
-							AllowPost);
+												"APIToken", 
+												responseMethods, 
+												".help", 
+												AllowPost);
 			slackBot.StartBot();
         }
 	
