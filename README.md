@@ -2,7 +2,7 @@ This is a self-hosted Slack bot for outgoing webhooks using the OWIN .NET self-h
 
 You can install the library via nuget with: Install-Package SlackBotLib
 
-Here's an example usage:
+Here's a basic example usage:
 ```c#
 using SlackBotLib;
 using System.Collections.Generic;
@@ -23,25 +23,77 @@ namespace TestConsole
                 }
             };
 						
-			//Example of the overload to specify the help command in channel
-			//SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods, ".help");
-			//Example of the allow post overloads
-			//SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods, AllowPost);
-			//SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods, ".help", AllowPost);
-            SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods);
-            slackBot.StartBot();
+			SlackBot slackBot = new SlackBot("http://myhostname.com:9000", "APIToken", responseMethods);
+			slackBot.StartBot();
         }
 
         private static string GetStatus(SlackPost slackPost)
         {
             return "This is the response to !status for " + slackPost.User_Name;
         }
+    }
+}
+```
+
+More advanced usage:
+
+```c#
+using SlackBotLib;
+using System.Collections.Generic;
+
+namespace TestConsole
+{
+    class Program
+    {
+    	private string _buildGroup = "Build Commands";
+        static void Main(string[] args)
+        {
+            List<ResponseMethods> responseMethods = new List<ResponseMethods>
+            {
+                new ResponseMethods
+                {
+                    Command = ".status",
+                    Usage = "Displays the system status.",
+                    ResponseHandler = GetStatus,
+		    		Group = _buildGroup
+                },
+				new ResponseMethods
+				{
+					Command = ".build",
+					Usage = "Start a build.",
+					ResponseHandler = StartBuild,
+					Group = _buildGroup
+				}
+            };
+	    
+			SlackBot slackBot = new SlackBot("http://myhostname.com:9000", 
+							"APIToken", 
+							responseMethods, 
+							".help", 
+							AllowPost);
+			slackBot.StartBot();
+        }
 	
-		//not required to use the library
 		private static bool AllowPost(SlackPost slackPost)
 		{
 			return (slackPost.User_Name != "OtherSlackBot");
 		}
+
+        private static string GetStatus(SlackPost slackPost)
+        {
+            return "This is the response to !status for " + slackPost.User_Name;
+        }
+	
+		private static string StartBuild(SlackPost slackPost)
+        {
+			var buildThis = slackPost.Args.FirstOrDefault();
+			if (buildThis == null)
+			{
+				return "Must supply the name of a build...";
+			}
+
+			return SomeBuildTools.Start(buildThis, slackPost.User_Name);
+        }
     }
 }
 ```
