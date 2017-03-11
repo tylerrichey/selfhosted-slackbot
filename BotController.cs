@@ -18,7 +18,7 @@ namespace SlackBotLib
 
 			Console.WriteLine(
 				string.Format(
-					"Command '{0}' from '{1}' in '{2}'", slackPost.Text, slackPost.User_Name, slackPost.Channel_Name));
+					"Command '{0}' from '{1}' in '{2}'", slackPost.Trigger_Word, slackPost.User_Name, slackPost.Channel_Name));
 
 			if (!SlackBot.AllowPost(slackPost))
 			{
