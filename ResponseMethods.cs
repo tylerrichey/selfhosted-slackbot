@@ -1,4 +1,6 @@
-﻿namespace SlackBotLib
+﻿using System.Text.RegularExpressions;
+
+namespace SlackBotLib
 {
 	public class ResponseMethods
 	{
@@ -6,5 +8,6 @@
 		public string Usage { get; set; }
 		public SlackBot.ResponseDelegate ResponseHandler { get; set; }
 		public string Group { get; set; }
+		public Regex RegexMatch { get; set; }
 	}
 }

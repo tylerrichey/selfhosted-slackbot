@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System.Net;
 using System.Net.Http;
@@ -18,7 +19,7 @@ namespace SlackBotLib
 
 			Console.WriteLine(
 				string.Format(
-					"Command '{0}' from '{1}' in '{2}'", slackPost.Trigger_Word, slackPost.User_Name, slackPost.Channel_Name));
+					"Text '{0}' from '{1}' in '{2}'", slackPost.Text, slackPost.User_Name, slackPost.Channel_Name));
 
 			if (!SlackBot.AllowPost(slackPost))
 			{
@@ -27,7 +28,11 @@ namespace SlackBotLib
 			}
 
 			var command = SlackBot.GetResponseMethods()
-								  .FirstOrDefault(r => r.Command == slackPost.Trigger_Word);
+			                      .Where(r => r.Command != null)
+								  .FirstOrDefault(r => r.Command == slackPost.Trigger_Word) ??
+	                      SlackBot.GetResponseMethods()
+			                      .Where(r => r.RegexMatch != null)
+								  .FirstOrDefault(r => r.RegexMatch.IsMatch(slackPost.Text));
 			if (command == null)
 			{
 				Console.WriteLine("Command has no handler.");

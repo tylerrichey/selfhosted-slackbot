@@ -18,6 +18,8 @@ namespace SlackBotLib
 		public string Trigger_Word { get; set; }
 		public List<string> Args { get; set; }
 
+		public SlackPost() { }
+
 		public SlackPost(NameValueCollection nvc)
 		{
 			List<string> argsList = new List<string>(nvc["text"].Trim().Split(' '));

@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackBotLib", "SlackBotLib.csproj", "{568B99B6-6D21-4BF0-803B-09EEF35EB5EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackBotLib.Tests", "SlackBotLib.Tests\SlackBotLib.Tests.csproj", "{9F67427A-0DCD-43B3-A5D0-1EF86CEDD42F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,5 +15,9 @@ Global
 		{568B99B6-6D21-4BF0-803B-09EEF35EB5EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{568B99B6-6D21-4BF0-803B-09EEF35EB5EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{568B99B6-6D21-4BF0-803B-09EEF35EB5EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F67427A-0DCD-43B3-A5D0-1EF86CEDD42F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F67427A-0DCD-43B3-A5D0-1EF86CEDD42F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F67427A-0DCD-43B3-A5D0-1EF86CEDD42F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F67427A-0DCD-43B3-A5D0-1EF86CEDD42F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

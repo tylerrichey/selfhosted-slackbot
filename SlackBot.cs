@@ -6,16 +6,17 @@ using System.Linq;
 
 namespace SlackBotLib
 {
-	public class SlackBot
+	public class SlackBot : IDisposable
 	{
 		public delegate string ResponseDelegate(SlackPost slackPost);
 		public delegate bool AllowPostDelegate(SlackPost slackPost);
 		private string _baseAddress;
-		private static string _token;
+		private string _token;
 		private static string _defaultHelpCommand = "!help";
 		private string _generalGroup = "General";
-		private static List<ResponseMethods> _responseMethods = new List<ResponseMethods>();
+		private List<ResponseMethods> _responseMethods = new List<ResponseMethods>();
 		private static AllowPostDelegate _allowPostDelegate = AllowPostDefault;
+		private static SlackBot _slackBot;
 
 		public SlackBot(string baseAddress, string apiToken, List<ResponseMethods> responseMethods)
 		{
@@ -29,11 +30,12 @@ namespace SlackBotLib
 				}
 			);
 			_responseMethods.AddRange(responseMethods);
-			_responseMethods.Where(r => r.Group == string.Empty || r.Group == null)
+			_responseMethods.Where(r => r.Group == string.Empty || r.Group == null && r.Command != null)
 							.ToList()
 							.ForEach(r => r.Group = _generalGroup);
 			_token = apiToken;
 			_baseAddress = baseAddress;
+			_slackBot = this;
 		}
 
 		public SlackBot(string baseAddress, string apiToken, List<ResponseMethods> responseMethods, string helpCommand)
@@ -51,6 +53,13 @@ namespace SlackBotLib
 		public SlackBot(string baseAddress, string apiToken, List<ResponseMethods> responseMethods, AllowPostDelegate allowPostDelegate)
 			: this(baseAddress, apiToken, responseMethods, _defaultHelpCommand, allowPostDelegate) { }
 
+		public void Dispose()
+		{
+			_defaultHelpCommand = "!help";
+			_allowPostDelegate = AllowPostDefault;
+			_slackBot = null;
+		}
+
 		public void StartBot()
 		{
 			using (WebApp.Start<Startup>(_baseAddress))
@@ -63,12 +72,12 @@ namespace SlackBotLib
 
 		public static List<ResponseMethods> GetResponseMethods()
 		{
-			return _responseMethods;
+			return _slackBot._responseMethods;
 		}
 
 		public static bool AllowPost(SlackPost slackPost)
 		{
-			return (slackPost.Token == _token) && _allowPostDelegate(slackPost);
+			return (slackPost.Token == _slackBot._token) && _allowPostDelegate(slackPost);
 		}
 
 		private static bool AllowPostDefault(SlackPost slackPost)
@@ -76,18 +85,24 @@ namespace SlackBotLib
 			return true;
 		}
 
-		private static string GetHelp(SlackPost slackPost)
+		public static string GetHelp(SlackPost slackPost)
 		{
+			if (!GetResponseMethods().Any(r => r.Command != null && r.Command != _defaultHelpCommand))
+			{
+				return string.Empty;
+			}
+			                         
 			StringBuilder sb = new StringBuilder();
-			if (_responseMethods.Select(r => r.Group).Distinct().Count() == 1)
+			var commands = GetResponseMethods().Where(r => r.RegexMatch == null).ToList();
+			if (commands.Select(r => r.Group).Distinct().Count() == 1)
 			{
 				sb.AppendLine("Bot Command - Usage");
-				_responseMethods.ForEach(r => sb.AppendLine(
+				commands.ForEach(r => sb.AppendLine(
 					string.Format("{0} - {1}", r.Command, r.Usage)));
 			}
 			else
 			{
-				var responseGroups = _responseMethods.GroupBy(r => r.Group)
+				var responseGroups = commands.GroupBy(r => r.Group)
 													 .Select(r => new { r.Key, responseMethods = r.ToList() });
 				foreach (var groups in responseGroups)
 				{
