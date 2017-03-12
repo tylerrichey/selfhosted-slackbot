@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/rkj9m6ccfbq23koc?svg=true)](https://ci.appveyor.com/project/tylerrichey/selfhosted-slackbot)
+
 This is a self-hosted Slack bot for outgoing webhooks using the OWIN .NET self-hosting libraries. You will need to start a new console application targeting Mono or .NET v4.5 and provide a base URL, an API token from Slack, and a List of objects that define the commands available to your bot. 
 
 You can install the library via nuget with: Install-Package SlackBotLib
